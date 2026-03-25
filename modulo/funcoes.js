@@ -1,29 +1,6 @@
 const dadosUtilizados = require('./estados_cidades')
 
-// let minhaLista = dadosUtilizados.listaDeEstados
-
 const dados  = dadosUtilizados
-
-const lista = []
-
-// function getListaDeEstados(){ 
-    
-//     let conteudo
-//     let resposta = []
-
-//     dados.listaDeEstados.estados.forEach(function(itemEstado){
-//         resposta.push (itemEstado.sigla)
-//     })
-
-//     conteudo = {
-//             "uf" : resposta,
-//             "quantidade" : resposta.length
-//         }
-//     return conteudo
-
-// }
-
-// console.log(getListaDeEstados())
 
 function getListaDeEstados(){ 
     
@@ -35,25 +12,30 @@ function getListaDeEstados(){
     })
 
     conteudo = {
-            "uf" : resposta,
-            "quantidade" : resposta.length
-        }
-    return conteudo
-    
+        "uf"            : resposta,
+        "quantidade"    : resposta.length
+    }
+
+    if(conteudo.quantidade == 0 || conteudo.uf == null){
+    return false
+    }else { return conteudo }
+        
 }
 
 function getDadosEstado(siglas){
 
+    let siglas2 = siglas.toUpperCase()
+
     let conteudo = {
-        "uf" : null ,
+        "uf"        : null ,
         "descricao" : null ,
-        "capital" : null ,
-        "regiao" : null
+        "capital"   : null ,
+        "regiao"    : null
     } 
 
     dados.listaDeEstados.estados.forEach(function(itemEstado){
 
-        if(itemEstado.sigla == siglas){
+        if(itemEstado.sigla == siglas2){
             conteudo.uf = itemEstado.sigla
             conteudo.descricao = itemEstado.nome
             conteudo.capital = itemEstado.capital
@@ -68,20 +50,22 @@ function getDadosEstado(siglas){
         || conteudo.regiao == null){
         return false
 
-    }else{  return conteudo }
+    }else{ return conteudo }
 
 }
 
 function getCapitalEstado(siglas){
 
+    let siglas2 = siglas.toUpperCase()
+
     let conteudo = {
-        "uf" : null ,
+        "uf"        : null ,
         "descricao" : null ,
-        "capital" : null 
+        "capital"   : null 
     }
 
     dados.listaDeEstados.estados.forEach(function(itemEstado){
-        if(itemEstado.sigla == siglas){
+        if(itemEstado.sigla == siglas2){
             conteudo.uf = itemEstado.sigla
             conteudo.descricao = itemEstado.nome
             conteudo.capital = itemEstado.capital
@@ -90,10 +74,11 @@ function getCapitalEstado(siglas){
 
     if(conteudo.uf == null 
         || conteudo.descricao == null 
-        || conteudo.capital == null){
+        || conteudo.capital == null
+        || siglas2 == ""){
         return false
 
-    }else{  return conteudo }
+    }else{ return conteudo }
 
 }
 
@@ -103,28 +88,90 @@ function getEstadoRegiao(regioes){
     const estados = []
     let regiao = null
 
-    dados.listaDeEstados.estados.forEach(item => {
+    dados.listaDeEstados.estados.forEach(function(item) {
 
         if (item.regiao.toUpperCase() === regioes2) {
 
             estados.push({
-                uf: item.sigla,
-                descricao: item.nome
+                uf          : item.sigla,
+                descricao   : item.nome
             })
 
             regiao = item.regiao
         }
     })
 
-    return {
-        regiao,
-        estados
+    if(regioes == ""){
+        return false
+    }else{
+        return {
+            regiao,
+            estados 
+        }
     }
 }
 
+function getCapitalPais(){
 
+    const capitais2 = []
 
-console.log(getEstadoRegiao("SUL"))
-// console.log(getCapitalEstado('SP'))
-// console.log(getDadosEstado('SP'))
-// console.log(getListaDeEstados())
+    dados.listaDeEstados.estados.forEach(function (itemEstado){
+
+        if(itemEstado.capital_pais){
+
+            capitais2.push({
+                capital_atual               : itemEstado.capital_pais.capital,
+                uf                          : itemEstado.sigla,
+                descricao                   : itemEstado.nome,
+                capital                     : itemEstado.capital,
+                regiao                      : itemEstado.regiao,
+                capital_pais_ano_inicio     : itemEstado.capital_pais.ano_inicio,
+                capital_pais_ano_termino    : itemEstado.capital_pais.ano_fim
+            })
+
+        }
+
+    })
+
+    if(capitais2 == 0){
+        return false
+    }else{
+    return {capitais : capitais2}}
+}
+
+function getCidades(siglas){
+
+    let siglas2 = siglas.toUpperCase()
+
+    let conteudo = null
+    let resposta = []
+
+    dados.listaDeEstados.estados.forEach(function(itemEstado){
+
+        if(itemEstado.sigla == siglas2){
+            conteudo = {
+            "uf"            : itemEstado.sigla,
+            "descricao"     : itemEstado.nome,
+            "quantidade"    : itemEstado.cidades.length,
+            }
+
+            itemEstado.cidades.forEach(function(itemCidade){
+            resposta.push (itemCidade.nome)
+            })
+
+        }
+
+    })
+
+    conteudo.cidades = resposta
+
+    return conteudo
+
+}
+
+console.log(getListaDeEstados())
+console.log(getDadosEstado('sp'))
+console.log(getCapitalEstado('ac'))
+console.log(getEstadoRegiao("sul"))
+console.log(getCapitalPais())
+console.log(getCidades("ac"))
