@@ -99,20 +99,30 @@ function getCapitalEstado(siglas){
 
 function getEstadoRegiao(regioes){
 
-    let conteudo = {
-        "regiao" : null ,
-        "estados" : null
-    }
+    const regioes2 = regioes.toUpperCase()
+    const estados = []
+    let regiao = null
 
-    list = []
+    dados.listaDeEstados.estados.forEach(item => {
 
-    dados.listaDeEstados.estados.forEach(function(itemEstado){
-        if(regioes == itemEstado.regiao){
-            conteudo.estados = itemEstado
+        if (item.regiao.toUpperCase() === regioes2) {
+
+            estados.push({
+                uf: item.sigla,
+                descricao: item.nome
+            })
+
+            regiao = item.regiao
         }
     })
 
+    return {
+        regiao,
+        estados
+    }
 }
+
+
 
 console.log(getEstadoRegiao("SUL"))
 // console.log(getCapitalEstado('SP'))
